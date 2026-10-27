@@ -42,7 +42,6 @@ jobs:
     name: Deploy to production
     needs: test
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       id-token: write
       contents: read
