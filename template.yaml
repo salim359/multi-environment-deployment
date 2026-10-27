@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Multi-environment serverless deployment
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+    Description: Deployment environment
+
+Resources:
+  EnvironmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "multi-env-${EnvironmentName}-environment"
+      CodeUri: src/
+      Handler: app.handler
+      Runtime: nodejs22.x
+      Timeout: 5
+      MemorySize: 128
+      Environment:
+        Variables:
+          ENVIRONMENT_NAME: !Ref EnvironmentName
+      Events:
+        EnvironmentApi:
+          Type: HttpApi
+          Properties:
+            Path: /environment
+            Method: GET
+
+Outputs:
+  EnvironmentName:
+    Description: Environment deployed by this stack
+    Value: !Ref EnvironmentName
+
+  ApiUrl:
+    Description: HTTP API endpoint
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/environment"
+
+  FunctionName:
+    Value: !Ref EnvironmentFunction
