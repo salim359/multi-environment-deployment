@@ -50,11 +50,12 @@ jobs:
 
       - name: Verify GitHub environment config
         env:
-          AWS_ROLE_ARN: ${{ vars.DEV }}
+          AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN || vars.DEV }}
           AWS_REGION: ${{ vars.AWS_REGION }}
         run: |
           if [ -z "$AWS_ROLE_ARN" ]; then
-            echo "::error::DEV is empty. Add variable DEV (role ARN) on the development environment or as a repo variable."
+            echo "::error::No role ARN found. On environment 'development', add variable AWS_ROLE_ARN (or DEV) ="
+            echo "arn:aws:iam::399352912234:role/dev"
             exit 1
           fi
           if [ -z "$AWS_REGION" ]; then
@@ -62,7 +63,7 @@ jobs:
             exit 1
           fi
           echo "AWS_REGION=$AWS_REGION"
-          echo "DEV role=$AWS_ROLE_ARN"
+          echo "Role ARN=$AWS_ROLE_ARN"
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
@@ -72,7 +73,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.DEV }}
+          role-to-assume: ${{ vars.AWS_ROLE_ARN || vars.DEV }}
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: github-actions-dev
 

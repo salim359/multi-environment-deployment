@@ -51,11 +51,12 @@ jobs:
 
       - name: Verify GitHub environment config
         env:
-          AWS_ROLE_ARN: ${{ vars.PROD }}
+          AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN || vars.PROD }}
           AWS_REGION: ${{ vars.AWS_REGION }}
         run: |
           if [ -z "$AWS_ROLE_ARN" ]; then
-            echo "::error::PROD is empty. Add variable PROD (role ARN) on the production environment or as a repo variable."
+            echo "::error::No role ARN found. On environment 'production', add variable AWS_ROLE_ARN (or PROD) ="
+            echo "arn:aws:iam::399352912234:role/prod"
             exit 1
           fi
           if [ -z "$AWS_REGION" ]; then
@@ -63,7 +64,7 @@ jobs:
             exit 1
           fi
           echo "AWS_REGION=$AWS_REGION"
-          echo "PROD role=$AWS_ROLE_ARN"
+          echo "Role ARN=$AWS_ROLE_ARN"
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
@@ -73,7 +74,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.PROD }}
+          role-to-assume: ${{ vars.AWS_ROLE_ARN || vars.PROD }}
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: github-actions-prod
 
