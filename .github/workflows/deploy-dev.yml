@@ -41,7 +41,6 @@ jobs:
     name: Deploy to development
     needs: test
     runs-on: ubuntu-latest
-    environment: development
     permissions:
       id-token: write
       contents: read
@@ -55,7 +54,7 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
         run: |
           if [ -z "$AWS_ROLE_ARN" ]; then
-            echo "::error::DEV is empty. Add variable DEV (role ARN) on the development environment or as a repo variable."
+            echo "::error::DEV is empty. Add repository variable DEV (role ARN)."
             exit 1
           fi
           if [ -z "$AWS_REGION" ]; then
