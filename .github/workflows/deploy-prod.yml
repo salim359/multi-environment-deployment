@@ -1,13 +1,13 @@
 name: Deploy Production
 
-# Production deploys only from main (or manual dispatch) and go through the
+# Production deploys from beta (or manual dispatch) and go through the
 # GitHub "production" environment — enable required reviewers there so humans
 # approve before the same application code reaches the prod stack.
 
 on:
   push:
     branches:
-      - main
+      - beta
   workflow_dispatch:
 
 concurrency:
@@ -34,11 +34,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
+          node-version: '22'
 
       - name: Run tests
         run: npm test
@@ -52,15 +48,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2

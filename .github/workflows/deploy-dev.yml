@@ -1,12 +1,12 @@
 name: Deploy Development
 
-# Auto-deploy to the development stack on every push to develop.
-# Uses the shared template with Environment=dev (separate stack, config, sizing).
+# Auto-deploy to the development stack on every push to beta.
+# Uses the shared template with EnvironmentName=dev (separate stack).
 
 on:
   push:
     branches:
-      - develop
+      - beta
   workflow_dispatch:
 
 concurrency:
@@ -33,11 +33,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
+          node-version: '22'
 
       - name: Run tests
         run: npm test
@@ -50,15 +46,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
