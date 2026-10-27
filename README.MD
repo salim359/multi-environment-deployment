@@ -4,7 +4,7 @@ Deploy the **same serverless application** to separate **development** and **pro
 
 **Idea:** shared application code; separate infrastructure, configuration, IAM roles, and deployment controls.
 
-![Both stacks CREATE_COMPLETE](multi-environment-deployment/test/public/final_2_stacks.png)
+![Both stacks CREATE_COMPLETE](test/public/final_2_stacks.png)
 
 ---
 
@@ -151,7 +151,7 @@ Deploy jobs **must** set `environment: development` or `environment: production`
 - URL: `token.actions.githubusercontent.com`
 - Audience: `sts.amazonaws.com`
 
-![Create GitHub OIDC identity provider](multi-environment-deployment/test/public/make_identity_provider.png)
+![Create GitHub OIDC identity provider](test/public/make_identity_provider.png)
 
 ### 4.2 IAM roles `dev` and `prod`
 
@@ -163,7 +163,7 @@ Trust policy must match the **actual** GitHub OIDC `sub` claim. This account use
 repo:salim359@212309625/multi-environment-deployment@1435319184:environment:development
 ```
 
-![Dev role trust policy](multi-environment-deployment/test/public/dev_role_trust_policy.png)
+![Dev role trust policy](test/public/dev_role_trust_policy.png)
 
 **`prod` role — trust `sub`:**
 
@@ -171,7 +171,7 @@ repo:salim359@212309625/multi-environment-deployment@1435319184:environment:deve
 repo:salim359@212309625/multi-environment-deployment@1435319184:environment:production
 ```
 
-![Prod role trust policy](multi-environment-deployment/test/public/prod_role_trust_policy.png)
+![Prod role trust policy](test/public/prod_role_trust_policy.png)
 
 Also require:
 
@@ -185,7 +185,7 @@ token.actions.githubusercontent.com:aud = sts.amazonaws.com
 
 Both roles need identity policies for SAM deploy (CloudFormation, S3 artifacts, IAM PassRole/CreateRole, Lambda, API Gateway, CloudWatch Logs). Empty roles fail with `cloudformation:CreateChangeSet` AccessDenied.
 
-![SamDeployPermissions on the dev role](multi-environment-deployment/test/public/attached_permissions.png)
+![SamDeployPermissions on the dev role](test/public/attached_permissions.png)
 
 ---
 
@@ -209,11 +209,11 @@ On push to `beta` (or manual **workflow_dispatch**):
 
 **Development workflow:**
 
-![Deploy Development workflow success](multi-environment-deployment/test/public/deployment_dev.png)
+![Deploy Development workflow success](test/public/deployment_dev.png)
 
 **Production workflow:**
 
-![Deploy Production workflow success](multi-environment-deployment/test/public/deployment_prod.png)
+![Deploy Production workflow success](test/public/deployment_prod.png)
 
 3. Read stack outputs:
 
@@ -227,7 +227,7 @@ aws cloudformation describe-stacks --stack-name multi-env-prod \
 
 Both stacks after a successful run:
 
-![multi-env-dev and multi-env-prod CREATE_COMPLETE](multi-environment-deployment/test/public/final_2_stacks.png)
+![multi-env-dev and multi-env-prod CREATE_COMPLETE](test/public/final_2_stacks.png)
 
 4. Call the API:
 
